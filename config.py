@@ -1,0 +1,1 @@
+lastfm = {'Key' : '', 'Secret' : ''}
