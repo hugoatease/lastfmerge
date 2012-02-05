@@ -12,11 +12,15 @@ def parse_qs(qs):
 def makesig(url):
     #Making an ordered dictionnary of query parameters for the URL
     dic = parse_qs( urlparse.urlparse(url).query )
-    dic.pop('format')
+    try:
+        dic.pop('format')
+    except:
+        pass
     result = str()
     for key in sorted(dic): #While sorting the dictionnary alphabetically
         #Append each <name><value> pair included in dictionnary
         result = result + key + dic[key]
+
     result = result + config.lastfm['Secret'] #Appending Secret API Key
     #Hashing the string with MD5
     hashobject = md5()
