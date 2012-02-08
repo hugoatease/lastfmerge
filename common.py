@@ -1,33 +1,53 @@
-import config
-from hashlib import md5
-import urlparse
+import json, urllib2
+from hashlib import md5, sha1
 
-def parse_qs(qs):
-    result = dict()
-    for pair in qs.split('&'):
-        sep = pair.split('=')
-        result [ sep[0] ] = sep[1]
-    return result
+def graburl(url):
+    page = urllib2.urlopen(url)
+    return page.read()
 
-def makesig(url):
-    #Making an ordered dictionnary of query parameters for the URL
-    dic = parse_qs( urlparse.urlparse(url).query )
+def cache(url):
+    urlhash = sha1(url).hexdigest()
+    get = False
     try:
-        dic.pop('format')
+        f = open('cache/' + urlhash + '.cache', 'r')
+        data = f.read()
+        f.close()
+        return data
     except:
-        pass
-    result = str()
-    for key in sorted(dic): #While sorting the dictionnary alphabetically
-        #Append each <name><value> pair included in dictionnary
-        result = result + key + dic[key]
+        get = True
+    if get == True:
+        data = graburl(url)
+        f = open('cache/' + urlhash + '.cache', 'w')
+        f.write(data)
+        f.close()
+        return data
+    
+    
+def jsonfetch(url, use_cache = True):
+    error = 0
+    ok = False
+    while ok == False and error < 3:
+        try:
+            if use_cache:
+                data = cache(url)
+            else:
+                data = graburl(url)
+            ok = True
+        except:
+            error = error + 1
+    if ok == True:
+        return json.loads(data)
+    else:
+        return None
 
-    result = result + config.lastfm['Secret'] #Appending Secret API Key
-    #Hashing the string with MD5
-    hashobject = md5()
-    hashobject.update(result)
-    result = hashobject.hexdigest()
-    return result
-
-def appendsig(url):
-    sig = makesig(url)
-    return url + '&api_sig=' + sig
+def unicodefilter(dic):
+    raised = False
+    for key in dic.keys():
+        try:
+            dic[key] = str(dic[key])
+        except UnicodeEncodeError:
+            raised = True
+    if raised:
+        return None
+    else:
+        return dic

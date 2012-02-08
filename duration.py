@@ -1,41 +1,5 @@
-import config
-import sys
-import urllib2, json
-from hashlib import sha1
-
-def cache(url):
-    urlhash = sha1(url).hexdigest()
-    get = False
-    try:
-        f = open('cache/' + urlhash + '.cache', 'r')
-        data = f.read()
-        f.close()
-        return data
-    except:
-        get = True
-    if get == True:
-        page = urllib2.urlopen(url)
-        data = page.read()
-        f = open('cache/' + urlhash + '.cache', 'w')
-        f.write(data)
-        f.close()
-        return data
-    
-    
-def jsonfetch(url):
-    error = 0
-    ok = False
-    while ok == False and error < 3:
-        try:
-            data = cache(url)
-            ok = True
-        except:
-            error = error + 1
-    if ok == True:
-        return json.loads(data)
-    else:
-        return None
-    
+import config, common
+import json
 
 def url(mbid = None, artist = None, name = None):
     if mbid != None:
@@ -87,7 +51,7 @@ i = 0
 while i <= (total - 1):
     print str(i+1) + ' / ' + str(total)
     try:
-        results = parser( jsonfetch( url(mbids[i]) ), mbid = True )
+        results = parser( common.jsonfetch( url(mbids[i]) ), mbid = True )
     except:
         results = None
 
@@ -111,7 +75,7 @@ for track in data:
         i = i +1
         print str(i) + ' / ' + str(missing)
         try:
-            results = parser( jsonfetch(url(mbid=None, artist=track['Artist'], name=track['Name'])), mbid=False)
+            results = parser( common.jsonfetch(url(mbid=None, artist=track['Artist'], name=track['Name'])), mbid=False)
         except:
             results = None
         if results != None:
