@@ -1,1 +1,1 @@
-lastfm = {'Key' : '', 'Secret' : ''}
+lastfm = {'Key' : '01af670c1ef137c96453695e39da48cd'}
