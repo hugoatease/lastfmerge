@@ -66,24 +66,10 @@ while i <= (total - 1):
 missing = 0
 for track in data:
     if track.has_key('Duration') == False:
+        track['Duration'] = None
         missing = missing + 1
+
 print "Missing track's durations: " + str(missing)
-finalmissing = 0
-i = 0
-for track in data:
-    if track.has_key('Duration') == False:
-        i = i +1
-        print str(i) + ' / ' + str(missing)
-        try:
-            results = parser( common.jsonfetch(url(mbid=None, artist=track['Artist'], name=track['Name'])), mbid=False)
-        except:
-            results = None
-        if results != None:
-            track['Duration'] = results['Duration']
-        else:
-            track['Duration'] = None
-            finalmissing = finalmissing + 1
-print finalmissing
 
 f = open(username+'.json', 'w')
 f.write(json.dumps(data))
