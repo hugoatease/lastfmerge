@@ -18,6 +18,15 @@ if check_r.has_key('Error'):
 else:
     username = check_r['Username']
     print 'Valid for ' + username
+
+    print '\nSelect a submission mode:\n1 : Scrobble tracks.\n2 : Remove previous scrobbled tracks (revert).'
+    mode = raw_input('[1,2]> ')
+    if mode == '2':
+        remove = True
+        print 'Reverting operation selected.'
+    else:
+        remove = False
+        print 'Scrobbling operation selected.'
     
     print 'Parsing scrobbles file...'
     f = open('scrobbles.json', 'r')
@@ -31,7 +40,11 @@ else:
         if converted != None:
             parsed_scrobbles.append(converted)
     parsed_scrobbles = json.dumps(parsed_scrobbles)
-    data = urlencode( {'scrobbles' : parsed_scrobbles} )
+    data = {'scrobbles' : parsed_scrobbles}
+    if remove:
+        data['mode'] = 'remove'
+    data = urlencode( data )
+    
     url = 'http://lastfmerge.appspot.com/scrobble/' + servicetoken
     print 'Submitting scrobbles...'
     response = urllib2.build_opener().open(urllib2.Request(url, data)).read()
