@@ -23,7 +23,7 @@ def parser(data):
 username = raw_input('Last.fm Username: ')
 page = 1
 print str(page)
-first = parser( common.jsonfetch( url(username, page ) ) )
+first = parser( common.jsonfetch( url(username, page ), use_cache=False ) )
 result = first['Result']
 total = first['Total']
 
@@ -31,11 +31,11 @@ page = 2
 
 while page <= total:
     print str(page) + ' / ' + str(total)
-    pageresult = parser( common.jsonfetch( url(username, page ) ) )['Result']
+    pageresult = parser( common.jsonfetch( url(username, page ), use_cache=False ) )['Result']
     for i in pageresult:
         result.append(i)
     page = page + 1
 
-f = open(username + '.db', 'w')
+f = open(username + '.json', 'w')
 f.write(json.dumps(result, f))
 f.close()
