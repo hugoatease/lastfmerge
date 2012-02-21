@@ -1,5 +1,9 @@
+import config
 import json, urllib2
 from hashlib import md5, sha1
+
+def ws(query):
+    return config.server + query
 
 def graburl(url):
     page = urllib2.urlopen(url)
