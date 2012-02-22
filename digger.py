@@ -35,7 +35,7 @@ print 'Searching for spaces...'
 i = 0
 while i <= len(data) - 2 :
     if data[i + 1]['Duration'] != None:
-        if (data[i]['Time'] - (data[i+1]['Duration'] + data[i+1]['Time']))  > 3600*2 and (time.time() - data[i]['Time']) < 3600*24*15:
+        if (data[i]['Time'] - (data[i+1]['Duration'] + data[i+1]['Time']))  > 3600*2 and (time.time() - data[i]['Time']) < 3600*24*12:
             dic = {'Begin': data[i+1]['Time'] + data[i+1]['Duration'],  'End' : data[i]['Time']}
             holes.append(dic)
     i = i +1
