@@ -1,7 +1,7 @@
 import common, webbrowser, json, urllib2
 from urllib import urlencode
 from sys import exit
-from os import remove
+from os import remove as rmfile
 
 def auth_prompt():
     print '===Authentication==='
@@ -30,7 +30,7 @@ try:
     servicetoken = f.read()
     f.close()
     if token_check(servicetoken) == False:
-        remove('token')
+        rmfile('token')
         print 'Please launch this script again to set your Token'
         servicetoken = None
 except IOError:
@@ -45,12 +45,17 @@ except IOError:
 if servicetoken == None:
     exit()
 
-print '\nSelect a submission mode:\n1 : Scrobble tracks.\n2 : Remove previous scrobbled tracks (revert).'
-mode = raw_input('[1,2]> ')
+print '\nSelect an operation:\n1 : Scrobble tracks.\n2 : Remove previous scrobbled tracks (revert).\n3 : Unregister service token.'
+mode = raw_input('[1,2,3]> ')
+
+if mode == '3':
+    print common.jsonfetch(common.ws('/unregister/' + servicetoken))['Message']
+    rmfile('token')
+    exit()
 if mode == '2':
     remove = True
     print 'Reverting operation selected.'
-else:
+if mode == '1':
     remove = False
     print 'Scrobbling operation selected.'
 
