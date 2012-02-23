@@ -49,12 +49,12 @@ f.close()
 
 print 'Filling spaces...'
 for hole in holes:
-    i = hole['Begin']
+    i = hole['End']
     for track in data:
         if track['Duration'] != None:
-            if i + track['Duration'] < hole['End']:
-                scrobbles.append( {'Artist' : track['Artist'], 'Name' : track['Name'], 'Time' : i} )
-                i = i + track['Duration']
+            if i - track['Duration'] > hole['Begin']:
+                scrobbles.append( {'Artist' : track['Artist'], 'Name' : track['Name'], 'Time' : i - track['Duration']} )
+                i = i - track['Duration']
                 data.remove(track)
         else:
             data.remove(track)
