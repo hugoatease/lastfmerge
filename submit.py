@@ -49,7 +49,7 @@ print '\nSelect an operation:\n1 : Scrobble tracks.\n2 : Remove previous scrobbl
 mode = raw_input('[1,2,3]> ')
 
 if mode == '3':
-    print common.jsonfetch(common.ws('/unregister/' + servicetoken))['Message']
+    print common.jsonfetch(common.ws('/unregister/' + servicetoken), use_cache=False)['Message']
     rmfile('token')
     exit()
 if mode == '2':
